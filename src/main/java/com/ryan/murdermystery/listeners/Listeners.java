@@ -2,8 +2,8 @@ package com.ryan.murdermystery.listeners;
 
 import com.destroystokyo.paper.event.entity.ProjectileCollideEvent;
 import com.ryan.murdermystery.Gameplay;
-import com.ryan.murdermystery.scoreboards.HideNametags;
 import com.ryan.murdermystery.MurderMystery;
+import com.ryan.murdermystery.scoreboards.HideNametags;
 import com.ryan.murdermystery.utils.MMUtils;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.sound.Sound;
@@ -158,7 +158,7 @@ public class Listeners implements Listener {
         
         MurderMystery.world = player.getWorld();
         MurderMystery.world.setGameRule(GameRule.FALL_DAMAGE, false);
-    
+        
         HideNametags.joinTeam(player);
     }
     
@@ -180,7 +180,7 @@ public class Listeners implements Listener {
             } else if (MMUtils.isInnocent((Player) event.getEntity()) && event.getItem().getItemStack().getType() == Material.BOW) {
                 Player player = (Player) event.getEntity();
                 Gameplay.giveArrows(player);
-    
+                
                 Component titleComponent = Component.text("The bow has been picked up!", TextColor.color(7, 212, 0));
                 Component subtitleComponent = Component.text("");
                 Title.Times time = Title.Times.of(Ticks.duration(0), Ticks.duration(60), Ticks.duration(0));

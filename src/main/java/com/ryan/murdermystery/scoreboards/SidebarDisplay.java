@@ -24,7 +24,6 @@ public class SidebarDisplay {
         innocentCounter.addEntry("Innocents Alive: ");
         sidebar.getScore("").setScore(1);
         sidebar.getScore("Innocents Alive: ").setScore(0);
-        
     }
     
     public static void updateSidebar() {
