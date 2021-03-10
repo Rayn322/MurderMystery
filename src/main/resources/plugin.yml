@@ -1,0 +1,10 @@
+name: MuderMystery
+version: @version@
+main: com.ryan.murdermystery.MurderMystery
+api-version: 1.16
+author: Ryan
+description: A murder mystery game.
+
+commands:
+  mm:
+    description: commands for murder mystery
