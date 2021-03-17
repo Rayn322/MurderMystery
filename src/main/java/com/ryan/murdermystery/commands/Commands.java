@@ -21,7 +21,7 @@ public class Commands implements CommandExecutor {
                 Player player = (Player) sender;
                 
                 if (player.getWorld().getPlayers().size() < 2) {
-                    player.sendMessage("Not enough players to start!");
+                    player.sendMessage(ChatColor.RED + "Not enough players to start!");
                 } else if (MurderMystery.isPlaying) {
                     player.sendMessage(ChatColor.RED + "Cannot start a game during a game!");
                 } else {

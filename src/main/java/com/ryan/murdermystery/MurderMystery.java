@@ -17,6 +17,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
@@ -33,7 +34,7 @@ public final class MurderMystery extends JavaPlugin {
     public static boolean isPlaying;
     private static MurderMystery plugin;
     private static final ArrayList<Location> spawnpoints = new ArrayList<>();
-    private static final Scoreboard emptyScoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
+    private static Scoreboard emptyScoreboard = null;
     
     public static MurderMystery getPlugin() {
         return plugin;
@@ -49,14 +50,22 @@ public final class MurderMystery extends JavaPlugin {
         SidebarDisplay.createSidebar();
         HideNametags.createHideNametagsTeam();
     
+        emptyScoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
         plugin = this;
     }
     
     @Override
     public void onDisable() {
-        Team team = Bukkit.getScoreboardManager().getMainScoreboard().getTeam("HiddenNametag");
+        Scoreboard board = Bukkit.getScoreboardManager().getMainScoreboard();
         
-        if (team != null) team.unregister();
+        Team hiddenNametag = board.getTeam("HiddenNametag");
+        if (hiddenNametag != null) hiddenNametag.unregister();
+        
+        Objective sidebar = board.getObjective("Sidebar");
+        if (sidebar != null) sidebar.unregister();
+        
+        Team innocentCounter = board.getTeam("InnocentCounter");
+        if (innocentCounter != null) innocentCounter.unregister();
     }
     
     public static void startGame() {

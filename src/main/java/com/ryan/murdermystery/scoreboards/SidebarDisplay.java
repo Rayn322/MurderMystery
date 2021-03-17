@@ -15,15 +15,16 @@ public class SidebarDisplay {
     private static Team innocentCounter;
     
     public static void createSidebar() {
-        Component displayName = Component.text("MURDER MYSTERY", TextColor.color(255, 245, 48));
-        Objective sidebar = board.registerNewObjective("Sidebar", "dummy", displayName);
-        sidebar.setDisplaySlot(DisplaySlot.SIDEBAR);
-        System.out.println("created sidebar");
+            Component displayName = Component.text("MURDER MYSTERY", TextColor.color(255, 245, 48));
+            Objective sidebar = board.registerNewObjective("Sidebar", "dummy", displayName);
+            sidebar.setDisplaySlot(DisplaySlot.SIDEBAR);
+            System.out.println("created sidebar");
+            
+            innocentCounter = board.registerNewTeam("InnocentCounter");
+            innocentCounter.addEntry("Innocents Alive: ");
+            sidebar.getScore("").setScore(1);
+            sidebar.getScore("Innocents Alive: ").setScore(0);
         
-        innocentCounter = board.registerNewTeam("InnocentCounter");
-        innocentCounter.addEntry("Innocents Alive: ");
-        sidebar.getScore("").setScore(1);
-        sidebar.getScore("Innocents Alive: ").setScore(0);
     }
     
     public static void updateSidebar() {
