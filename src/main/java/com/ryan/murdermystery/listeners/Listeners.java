@@ -26,22 +26,31 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
+import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerPickupArrowEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.inventory.ItemStack;
 
 public class Listeners implements Listener {
     
     @EventHandler
     public void onPlayerAttack(EntityDamageByEntityEvent event) {
-        if (!(event.getEntity() instanceof Player) || !(event.getDamager() instanceof Player) && !(event.getDamager() instanceof Projectile))
+        
+        if (!(event.getEntity() instanceof Player)) {
             return;
+        }
+        
+        if (!(event.getDamager() instanceof Player) && !(event.getDamager() instanceof Projectile)) {
+            return;
+        }
+        
         event.setCancelled(true);
+        
         if (!MurderMystery.isPlaying) return;
         
         Player damager;
+        Location damagerLocation;
         Player attacked = (Player) event.getEntity();
         Location deathLocation = attacked.getLocation();
         
@@ -52,6 +61,8 @@ public class Listeners implements Listener {
             damager = (Player) arrow.getShooter();
         }
         
+        damagerLocation = damager.getLocation();
+    
         // detective attacks
         if (MMUtils.isDetective(damager) && event.getCause() == EntityDamageEvent.DamageCause.PROJECTILE) {
             
@@ -71,6 +82,8 @@ public class Listeners implements Listener {
                         60,
                         10);
                 System.out.println("detective shoot innocent");
+                
+                // Gameplay.dropBow(damagerLocation);
                 Gameplay.checkWinConditions();
                 
             } else if (MMUtils.isMurderer(attacked)) {
@@ -101,20 +114,16 @@ public class Listeners implements Listener {
                         60,
                         10);
                 
+                // TODO: drop bow if innocent has the bow
+                
                 Gameplay.checkWinConditions();
             } else if (MMUtils.isDetective(attacked)) {
                 
                 // murderer kills detective
                 Gameplay.kill(attacked);
-                MurderMystery.world.dropItem(deathLocation, new ItemStack(Material.BOW));
                 System.out.println("murderer kills detective");
-                
-                Component titleComponent = Component.text("The bow has been dropped!", TextColor.color(7, 212, 0));
-                Component subtitleComponent = Component.text("Go pick it up to become the detective.", TextColor.color(83, 201, 79));
-                Title.Times time = Title.Times.of(Ticks.duration(0), Ticks.duration(60), Ticks.duration(0));
-                Title title = Title.title(titleComponent, subtitleComponent, time);
-                MurderMystery.world.showTitle(title);
-                
+    
+                //Gameplay.dropBow(deathLocation);
                 Gameplay.checkWinConditions();
             }
         } else if (MMUtils.isInnocent(damager) && event.getCause() == EntityDamageEvent.DamageCause.PROJECTILE) {
@@ -208,8 +217,16 @@ public class Listeners implements Listener {
     }
     
     @EventHandler
-    public void onPaintingHit(ProjectileCollideEvent event) {
+    public void onPaintingShot(ProjectileCollideEvent event) {
+        // allows arrow to travel through painting
         if (event.getCollidedWith() instanceof Painting) {
+            event.setCancelled(true);
+        }
+    }
+    
+    @EventHandler
+    public void onPaintingBreak(HangingBreakEvent event) {
+        if (event.getEntity() instanceof Painting && MurderMystery.isPlaying) {
             event.setCancelled(true);
         }
     }

@@ -1,8 +1,13 @@
 package com.ryan.murdermystery;
 
 import com.ryan.murdermystery.scoreboards.SidebarDisplay;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.title.Title;
+import net.kyori.adventure.util.Ticks;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -28,8 +33,15 @@ public class Gameplay {
     }
     
     public static void kill(Player player) {
-        player.setGameMode(GameMode.SPECTATOR);
+        // TODO: don't drop bow if game is now over
         alivePlayers.remove(player);
+    
+        if (player.getInventory().contains(Material.BOW) && alivePlayers.size() != 1) {
+            dropBow(player.getLocation());
+        }
+        
+        player.setGameMode(GameMode.SPECTATOR);
+        player.getInventory().clear();
         SidebarDisplay.updateSidebar();
     }
     
@@ -49,5 +61,15 @@ public class Gameplay {
                 }
             }
         }.runTaskTimer(MurderMystery.getPlugin(), 0, 40);
+    }
+    
+    public static void dropBow(Location deathLocation) {
+        MurderMystery.world.dropItem(deathLocation, new ItemStack(Material.BOW));
+    
+        Component titleComponent = Component.text("The bow has been dropped!", TextColor.color(7, 212, 0));
+        Component subtitleComponent = Component.text("Go pick it up to become the detective.", TextColor.color(83, 201, 79));
+        Title.Times time = Title.Times.of(Ticks.duration(0), Ticks.duration(60), Ticks.duration(0));
+        Title title = Title.title(titleComponent, subtitleComponent, time);
+        MurderMystery.world.showTitle(title);
     }
 }
